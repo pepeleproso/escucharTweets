@@ -6,29 +6,20 @@ import os
 import time
 import datetime
 import io
+from NetworkManager import NetworkChecker
+from JsonFileStorage import JsonFileStorage
 
-class JsonFileStorage(object):
-    def __init__(self, prefijoNombre):
-        self.filename = prefijoNombre + str(datetime.datetime.now()).split(':')[0] + '.json'
-    
-    def guardarTweet(self, tweetjson):
-        try:
-            with open(self.filename, 'a') as outfile:
-                json.dump(tweetjson, outfile)
-        except BaseException, e:
-            raise Exception('Error guardando tweet',e)
 
 class listener(StreamListener):
-    def __init__(self, start_time, time_limit=2):
+    def __init__(self, start_time, time_limit=2, prefijoArchivo='tweets'):
         self.time = start_time
         self.limit = time_limit
         self.tweet_data = []
-        self.TweetStorage = JsonFileStorage('tweetsMarcha')
-
+        self.TweetStorage = JsonFileStorage(prefijoArchivo)
 
     def on_data(self, data):
-        print(data)
-
+        #print(data)
+        print 'aca'
         try:
             self.TweetStorage.guardarTweet(data)
             return True
@@ -39,8 +30,13 @@ class listener(StreamListener):
 
     def on_error(self, status):
         with open('logError.json', 'a') as errfile:
-            errfile.write(status)
+            errfile.write(str(status))
             errfile.write('\n')
+
+    def on_timeout(self):
+        sys.stderr.write("Timeout, sleeping for 60 seconds...\n")
+        time.sleep(60)
+        return 
 
 class EscucharTweets(object):
     def __init__(self):
@@ -49,26 +45,54 @@ class EscucharTweets(object):
         self.access_token = None
         self.access_secret = None
         self.keyword_list = []
-
+        self.twitterStream = None
         #iniciar el cliente
-        escucharTweets.CargarDatosTwitterApp()
+        self.CargarDatosTwitterApp()
 
     def CargarDatosTwitterApp(self):
-        with open('twitterApp.json', 'r') as twitterAppfile:
+        with open('escucharTweets.json', 'r') as twitterAppfile:
                 filecontents = json.load(twitterAppfile)
                 self.consumer_key = filecontents['TwitterAPP'][0]['consumer_key']
                 self.consumer_secret = filecontents['TwitterAPP'][0]['consumer_secret']
                 self.access_token = filecontents['TwitterAPP'][0]['access_token']
                 self.access_secret = filecontents['TwitterAPP'][0]['access_secret']
+                self.prefijoArchivoSalida = filecontents['ConfiguracionLogger'][0]['prefijo_archivo_salida']
                 self.keyword_list = filecontents['HasTags']
     
     def IniciarEscucha(self):
+        print 'iniciar escucha'
         auth = OAuthHandler(self.consumer_key, self.consumer_secret)
         auth.set_access_token(self.access_token, self.access_secret)
 
         start_time = time.time()
-        twitterStream = Stream(auth, listener(start_time))
-        twitterStream.filter(track=self.keyword_list, stall_warnings=True, async=False, encoding='utf8')
+        self.twitterStream = Stream(auth, listener(start_time, self.prefijoArchivoSalida))
+        self.twitterStream.filter(track=self.keyword_list, stall_warnings=True, async=True, encoding='utf8')
+    
+    def DetenerEscucha(self):
+        print 'detener escucha'
+        self.twitterStream.disconnect()
 
-escucharTweets = EscucharTweets()
-escucharTweets.IniciarEscucha()
+class Bot(object):
+    def __init__(self):
+        self.escucharTweets = EscucharTweets()
+        self.network = NetworkChecker()
+
+    def Disconnect(self, avariable):
+#        print 'desconectado'
+        self.escucharTweets.DetenerEscucha()
+
+    def Connect(self, avariable):
+#        print 'conectado'
+        if self.escucharTweets != None:
+            self.escucharTweets.DetenerEscucha()
+        time.sleep(15)
+        self.escucharTweets.IniciarEscucha()
+
+    def iniciar(self):
+        self.escucharTweets.IniciarEscucha()
+        self.network.subscribe('NetworkConnect', self.Connect)
+        self.network.subscribe('NetworkDisconnect', self.Disconnect)
+        self.network.iniciar()
+
+bot = Bot()
+bot.iniciar()
