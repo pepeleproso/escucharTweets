@@ -37,7 +37,6 @@ class listener(StreamListener):
 
     def on_data(self, data):
         #print(data)
-        print 'aca'
         try:
             self.TweetStorage.guardarTweet(data)
             return True
@@ -96,11 +95,9 @@ class Bot(object):
         self.network = NetworkChecker()
 
     def Disconnect(self, avariable):
-#        print 'desconectado'
         self.escucharTweets.DetenerEscucha()
 
     def Connect(self, avariable):
-#        print 'conectado'
         if self.escucharTweets != None:
             self.escucharTweets.DetenerEscucha()
         time.sleep(15)

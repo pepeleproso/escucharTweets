@@ -46,7 +46,7 @@ class GioNetworkChecker(Observable):
             self.fire('NetworkConnect')
     
     def iniciar(self):
-        print("Waiting for signals")
+        print("Iniciando Monitor de Conexion")
         print("-------------------")
   
         loop = GObject.MainLoop()

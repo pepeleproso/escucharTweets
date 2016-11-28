@@ -52,7 +52,7 @@ class DbusNetworkChecker(Observable.Observable):
             self.fire('NetworkConnect')
 
     def iniciar(self):
-        print("Waiting for signals")
+        print("Iniciando Monitor de Conexion")
         print("-------------------")
   
         gloop = dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)

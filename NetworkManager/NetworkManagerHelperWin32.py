@@ -145,6 +145,9 @@ class Win32NetworkChecker(Observable.Observable):
         self.alert_watcher = None
 
     def iniciar(self):
+        print("Iniciando Monitor de Conexion")
+        print("-------------------")
+
         if self.alert_watcher is None:
             self.alert_watcher = NetworkManager(self.connected_cb, self.connected_info_cb, self.disconnected_cb)
             p = Thread(target=self.alert_watcher.register)
@@ -158,20 +161,3 @@ class Win32NetworkChecker(Observable.Observable):
 
     def disconnected_cb(self):
         self.fire('NetworkDisconnect')
-
-if __name__ == '__main__':
-    # Run an expample of the code so that the user can test the code in
-    # real life.
-    from threading import Thread
-    def connected():
-        print 'Connected'
-
-    def connected_info():
-        print 'Connected'
-        
-    def disconnected():
-        print 'Disconnected'
- 
-    manager = NetworkManager(connected, connected_info, disconnected)
-    p = Thread(target=manager.register)
-    p.start()
