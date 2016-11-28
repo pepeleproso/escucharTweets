@@ -93,19 +93,16 @@ class NetworkManager(DesignatedWrapPolicy):
  
     def ConnectionMade(self, *args):
         """Tell that the connection is up again."""
-        logging.info('Connection was made.')
         if self.connected_cb_info is not None:
             self.connected_cb_info()
  
     def ConnectionMadeNoQOCInfo(self, *args):
         """Tell that the connection is up again."""
-        logging.info('Connection was made no info.')
         if self.connected_cb is not None:
             self.connected_cb()
  
     def ConnectionLost(self, *args):
         """Tell the connection was lost."""
-        logging.info('Connection was lost.')
         if self.disconnected_cb is not None:
             self.disconnected_cb() 
  
@@ -135,7 +132,7 @@ class NetworkManager(DesignatedWrapPolicy):
                 event_system.Store(PROGID_EventSubscription, 
                                    event_subscription)
             except pythoncom.com_error as e:
-                logging.error(
+                print (
                     'Error registering %s to event %s', e, current_event[1])
  
         pythoncom.PumpMessages()

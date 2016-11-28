@@ -1,10 +1,10 @@
 {
 	"TwitterAPP" : [
 		{
-		"consumer_key" : "CONSUMER KEY",
-		"consumer_secret" : "CONSUMER SECRET",
-		"access_token" : "ACCESS TOKEN",
-		"access_secret" : "ACCESS SECRET"
+		"consumer_key" : "wPvbnar6XewHPJBfreavg5urr",
+		"consumer_secret" : "w6Ufk0mRRoCDpMssOrQEgTqVo9AmAKbd9sXByVHGYHMIcrYVnU",
+		"access_token" : "747416373228376064-KqDPF1xJSmnaHUJ4gKSLqqy8l2qMgVP",
+		"access_secret" : "wyqdEYIQmavVfAmH0xXb1qUwW8842ajbnaZ84U08ziLxI"
 		}
 	],
 	"HasTags" : [ "#DavisCup", "#CopaDavis", "#vamosargentina" ],

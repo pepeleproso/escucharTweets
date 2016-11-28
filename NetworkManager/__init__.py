@@ -18,12 +18,13 @@
 
 try:
     from NetworkManagerDbus import DbusNetworkChecker  as NetworkChecker
-except expression as identifier:
+except Exception, e:
     pass
 
 try:
     from NetworkManagerHelperWin32 import Win32NetworkChecker  as NetworkChecker
-except expression as identifier:
+except Exception, e:
+    print "error"
     pass
 
 #from NetworkManagerHelperGio import GioNetworkChecker as NetworkChecker 

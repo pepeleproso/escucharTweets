@@ -15,6 +15,7 @@
 #    You should have received a copy of the GNU General Public License
 #    along with escucharTweets; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
+from Event import Event
 
 class Observable(object):
     def __init__(self):
