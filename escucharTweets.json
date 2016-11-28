@@ -1,0 +1,16 @@
+{
+	"TwitterAPP" : [
+		{
+		"consumer_key" : "CONSUMER KEY",
+		"consumer_secret" : "CONSUMER SECRET",
+		"access_token" : "ACCESS TOKEN",
+		"access_secret" : "ACCESS SECRET"
+		}
+	],
+	"HasTags" : [ "#DavisCup", "#CopaDavis", "#vamosargentina" ],
+	"ConfiguracionLogger" : [
+		{
+		"prefijo_archivo_salida" : "tweetsDavis"
+		}
+	]
+}
