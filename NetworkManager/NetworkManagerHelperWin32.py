@@ -142,13 +142,13 @@ class NetworkManager(DesignatedWrapPolicy):
 
 class Win32NetworkChecker(Observable.Observable):
     ''' this class does lazy checks for network availability and 
-    disconnects emesene if the network goes down '''
+    disconnects if the network goes down '''
     def __init__(self):
         super(Win32NetworkChecker, self).__init__()
         self.alert_watcher = None
 
     def iniciar(self):
-        logger.info("Iniciando Monitor de Conexion")
+        logger.info("Init Network Checker")
         logger.info("-----------------------------")
 
         if self.alert_watcher is None:

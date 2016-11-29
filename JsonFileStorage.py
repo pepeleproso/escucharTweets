@@ -32,10 +32,10 @@ class JsonFileStorage(object):
     
     def saveTweet(self, tweetjson):
         logger.info("Saving tweet")
-        logger.info(tweetjson)
+        logger.debug(tweetjson)
         try:
             with open(self.filename, 'a') as outfile:
                 json.dump(tweetjson, outfile)
-        except BaseException, e:
+        except BaseException as e:
             logger.error(e)
             raise Exception('Error saving tweet',e)
