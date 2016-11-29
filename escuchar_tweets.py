@@ -17,9 +17,8 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import logging
-logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
-
+import argparse
 import json
 import os
 import io
@@ -50,6 +49,17 @@ class Bot(object):
         except KeyboardInterrupt as ex:
             if (self.tweetBot is not None):
                 self.tweetBot.StopListening()
-        
+
+parser = argparse.ArgumentParser()
+parser.add_argument('-v', '--verbose', action="count", 
+                        help="increase output verbosity (e.g., -vv is more than -v)")
+args = parser.parse_args()
+
+if args.verbose:
+    logging.basicConfig(level=logging.DEBUG)
+    logger.info("Verbose output.")
+else:
+    logging.basicConfig(level=logging.WARNING)
+
 bot = Bot()
 bot.init()
