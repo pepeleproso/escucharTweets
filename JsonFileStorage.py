@@ -16,6 +16,9 @@
 #    along with escucharTweets; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import logging
+logger = logging.getLogger(__name__)
+
 import json
 import os
 import time
@@ -23,12 +26,16 @@ import datetime
 import io
 
 class JsonFileStorage(object):
-    def __init__(self, prefijoNombre):
-        self.filename = prefijoNombre + str(datetime.datetime.now()).split(':')[0] + '.json'
+    def __init__(self, filePrefix):
+        #FIXME: podria hacer archivos cada X cantidad de tweets en vez de con tiempo
+        self.filename = filePrefix + str(datetime.datetime.now()).split(':')[0] + '.json'
     
-    def guardarTweet(self, tweetjson):
+    def saveTweet(self, tweetjson):
+        logger.info("Saving tweet")
+        logger.info(tweetjson)
         try:
             with open(self.filename, 'a') as outfile:
                 json.dump(tweetjson, outfile)
         except BaseException, e:
-            raise Exception('Error guardando tweet',e)
+            logger.error(e)
+            raise Exception('Error saving tweet',e)

@@ -16,15 +16,15 @@
 #    along with escucharTweets; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import logging
+logger = logging.getLogger(__name__)
+
 try:
     from NetworkManagerDbus import DbusNetworkChecker  as NetworkChecker
 except Exception, e:
-    pass
+    logger.error(e)
 
 try:
     from NetworkManagerHelperWin32 import Win32NetworkChecker  as NetworkChecker
 except Exception, e:
-    print "error"
-    pass
-
-#from NetworkManagerHelperGio import GioNetworkChecker as NetworkChecker 
+    logger.error(e) 

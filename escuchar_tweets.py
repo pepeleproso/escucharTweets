@@ -16,6 +16,10 @@
 #    along with escucharTweets; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
+
 from tweepy import Stream
 from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
@@ -28,34 +32,37 @@ from NetworkManager import NetworkChecker
 from JsonFileStorage import JsonFileStorage
 
 
-class listener(StreamListener):
-    def __init__(self, start_time, time_limit=2, prefijoArchivo='tweets'):
+class FileStorageListener(StreamListener):
+    def __init__(self, start_time, time_limit=2, filePrefix='tweets'):
         self.time = start_time
         self.limit = time_limit
         self.tweet_data = []
-        self.TweetStorage = JsonFileStorage(prefijoArchivo)
+        self.TweetStorage = JsonFileStorage(filePrefix)
 
     def on_data(self, data):
-        #print(data)
+        logger.info("Tweet received")
+        logger.info(data)
+
         try:
-            self.TweetStorage.guardarTweet(data)
+            self.TweetStorage.saveTweet(data)
             return True
-        except BaseException, e:
-            print 'failed ondata,', str(e)
+        except BaseException as e:
+            logger.error('failed ondata: %s', str(e))
             time.sleep(5)
-            pass
 
     def on_error(self, status):
+        logger.error('Error Status: %s', status)
+
         with open('logError.json', 'a') as errfile:
             errfile.write(str(status))
             errfile.write('\n')
 
     def on_timeout(self):
-        sys.stderr.write("Timeout, sleeping for 60 seconds...\n")
+        logger.error("Timeout, sleeping for 60 seconds...\n")
         time.sleep(60)
         return 
 
-class EscucharTweets(object):
+class TweetBot(object):
     def __init__(self):
         self.consumer_key = None
         self.consumer_secret = None
@@ -63,51 +70,58 @@ class EscucharTweets(object):
         self.access_secret = None
         self.keyword_list = []
         self.twitterStream = None
-        #iniciar el cliente
-        self.CargarDatosTwitterApp()
+        self.loadConfigData()
 
-    def CargarDatosTwitterApp(self):
+    def loadConfigData(self):
+        logger.info("Loading Config Options")
         with open('escucharTweets.json', 'r') as twitterAppfile:
                 filecontents = json.load(twitterAppfile)
                 self.consumer_key = filecontents['TwitterAPP'][0]['consumer_key']
                 self.consumer_secret = filecontents['TwitterAPP'][0]['consumer_secret']
                 self.access_token = filecontents['TwitterAPP'][0]['access_token']
                 self.access_secret = filecontents['TwitterAPP'][0]['access_secret']
-                self.prefijoArchivoSalida = filecontents['ConfiguracionLogger'][0]['prefijo_archivo_salida']
+                self.outputfileprefix = filecontents['ConfiguracionLogger'][0]['prefijo_archivo_salida']
                 self.keyword_list = filecontents['HasTags']
+                logger.info("Searching for Hastags: %s", ' '.join(self.keyword_list))
     
-    def IniciarEscucha(self):
-        print 'iniciar escucha'
+    def InitListening(self):
+        logging.info("init tweet listening")
+        print ("init tweet listening")
         auth = OAuthHandler(self.consumer_key, self.consumer_secret)
         auth.set_access_token(self.access_token, self.access_secret)
 
         start_time = time.time()
-        self.twitterStream = Stream(auth, listener(start_time, self.prefijoArchivoSalida))
+        self.twitterStream = Stream(auth, FileStorageListener(start_time, self.outputfileprefix))
         self.twitterStream.filter(track=self.keyword_list, stall_warnings=True, async=True, encoding='utf8')
     
-    def DetenerEscucha(self):
-        print 'detener escucha'
+    def StopListening(self):
+        logging.info("stop tweet listening")
+        print ("stop tweet listening")
         self.twitterStream.disconnect()
 
 class Bot(object):
     def __init__(self):
-        self.escucharTweets = EscucharTweets()
-        self.network = NetworkChecker()
+        self.tweetBot = TweetBot()
+        self.networkChecker = NetworkChecker()
 
     def Disconnect(self, avariable):
-        self.escucharTweets.DetenerEscucha()
+        self.tweetBot.StopListening()
 
     def Connect(self, avariable):
-        if self.escucharTweets != None:
-            self.escucharTweets.DetenerEscucha()
+        if self.tweetBot != None:
+            self.tweetBot.StopListening()
         time.sleep(15)
-        self.escucharTweets.IniciarEscucha()
+        self.tweetBot.InitListening()
 
-    def iniciar(self):
-        self.escucharTweets.IniciarEscucha()
-        self.network.subscribe('NetworkConnect', self.Connect)
-        self.network.subscribe('NetworkDisconnect', self.Disconnect)
-        self.network.iniciar()
-
+    def init(self):
+        try:
+            self.tweetBot.InitListening()
+            self.networkChecker.subscribe('NetworkConnect', self.Connect)
+            self.networkChecker.subscribe('NetworkDisconnect', self.Disconnect)
+            self.networkChecker.iniciar()
+        except KeyboardInterrupt as ex:
+            if (self.tweetBot is not None):
+                self.tweetBot.StopListening()
+        
 bot = Bot()
-bot.iniciar()
+bot.init()

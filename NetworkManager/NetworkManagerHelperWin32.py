@@ -17,6 +17,9 @@
 # with this program.  If not, see <http://www.gnu.org/licenses/>.
 """Implementation of a Network Manager using ISesNework in Python."""
 
+import logging
+logger = logging.getLogger(__name__)
+
 from threading import Thread
 import pythoncom
  
@@ -132,7 +135,7 @@ class NetworkManager(DesignatedWrapPolicy):
                 event_system.Store(PROGID_EventSubscription, 
                                    event_subscription)
             except pythoncom.com_error as e:
-                print (
+                logger.error (
                     'Error registering %s to event %s', e, current_event[1])
  
         pythoncom.PumpMessages()
@@ -145,8 +148,8 @@ class Win32NetworkChecker(Observable.Observable):
         self.alert_watcher = None
 
     def iniciar(self):
-        print("Iniciando Monitor de Conexion")
-        print("-------------------")
+        logger.info("Iniciando Monitor de Conexion")
+        logger.info("-----------------------------")
 
         if self.alert_watcher is None:
             self.alert_watcher = NetworkManager(self.connected_cb, self.connected_info_cb, self.disconnected_cb)
@@ -154,10 +157,12 @@ class Win32NetworkChecker(Observable.Observable):
             p.start()
 
     def connected_cb(self):
+        logger.info("Network State Change: Connect")
         self.fire('NetworkConnect')
 
     def connected_info_cb(self):
         pass
 
     def disconnected_cb(self):
+        logger.info("Network State Change: Disconnect")
         self.fire('NetworkDisconnect')

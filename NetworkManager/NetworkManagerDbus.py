@@ -17,6 +17,8 @@
 #    along with escucharTweets; if not, write to the Free Software
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
+import logging
+logger = logging.getLogger(__name__)
 from base import Event
 from base import Observable
 
@@ -41,22 +43,29 @@ class DbusNetworkChecker(Observable.Observable):
         self.alert_watcher = None
 
     def _on_network_changed(self, *args, **kwargs):
-#        print 'eventoooo'
         s = args[0]
         ss = nm_state[s]
- #       print "\tNM State:", ss
+        logger.info("Network State Change: %s", ss)
         avariable = True
         if not s == 70:
+            logger.info("Network State Change: Disconnect")
             self.fire('NetworkDisconnect')
         else:
+            logger.info("Network State Change: Connect")
             self.fire('NetworkConnect')
 
     def iniciar(self):
-        print("Iniciando Monitor de Conexion")
-        print("-------------------")
-  
-        gloop = dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
-        gloop = GLib.MainLoop()
-        self.alert_watcher = dbus.SystemBus()
-        self.alert_watcher.add_signal_receiver(self._on_network_changed, "StateChanged",  "org.freedesktop.NetworkManager")
-        gloop.run()
+        logger.info("Iniciando Monitor de Conexion")
+        logger.info("-----------------------------")
+
+        gloop = None
+
+        try:
+            gloop = dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
+            gloop = GLib.MainLoop()
+            self.alert_watcher = dbus.SystemBus()
+            self.alert_watcher.add_signal_receiver(self._on_network_changed, "StateChanged",  "org.freedesktop.NetworkManager")
+            gloop.run()
+        except KeyboardInterrupt as ex:
+            gloop.quit()
+            raise ex
