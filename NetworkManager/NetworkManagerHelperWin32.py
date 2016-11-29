@@ -147,7 +147,7 @@ class Win32NetworkChecker(Observable.Observable):
         super(Win32NetworkChecker, self).__init__()
         self.alert_watcher = None
 
-    def iniciar(self):
+    def init(self):
         logger.info("Init Network Checker")
         logger.info("-----------------------------")
 

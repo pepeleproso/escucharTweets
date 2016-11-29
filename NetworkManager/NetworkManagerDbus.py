@@ -8,7 +8,7 @@
 #    the Free Software Foundation; either version 3 of the License, or
 #    (at your option) any later version.
 #
-#    emesene is distributed in the hope that it will be useful,
+#    escucharTweets is distributed in the hope that it will be useful,
 #    but WITHOUT ANY WARRANTY; without even the implied warranty of
 #    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
 #    GNU General Public License for more details.
@@ -19,6 +19,7 @@
 
 import logging
 logger = logging.getLogger(__name__)
+
 from base import Event
 from base import Observable
 
@@ -54,8 +55,8 @@ class DbusNetworkChecker(Observable.Observable):
             logger.info("Network State Change: Connect")
             self.fire('NetworkConnect')
 
-    def iniciar(self):
-        logger.info("Iniciando Monitor de Conexion")
+    def init(self):
+        logger.info("Init Network Checker")
         logger.info("-----------------------------")
 
         gloop = None
