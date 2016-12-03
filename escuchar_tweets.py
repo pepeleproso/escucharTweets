@@ -55,11 +55,16 @@ parser.add_argument('-v', '--verbose', action="count",
                         help="increase output verbosity (e.g., -vv is more than -v)")
 args = parser.parse_args()
 
-if args.verbose:
-    logging.basicConfig(level=logging.DEBUG)
-    logger.info("Verbose output.")
-else:
-    logging.basicConfig(level=logging.WARNING)
+debuglevel = logging.WARNING
+
+if args.verbose == 1:
+    debuglevel = logging.WARNING
+elif args.verbose == 2:
+    debuglevel = logging.INFO
+elif args.verbose == 3:
+    debuglevel = logging.DEBUG
+
+logging.basicConfig(level=debuglevel)
 
 bot = Bot()
 bot.init()

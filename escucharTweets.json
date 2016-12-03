@@ -7,10 +7,11 @@
 		"access_secret" : "wyqdEYIQmavVfAmH0xXb1qUwW8842ajbnaZ84U08ziLxI"
 		}
 	],
-	"HasTags" : [ "#DavisCup", "#CopaDavis", "#vamosargentina" ],
-	"ConfiguracionLogger" : [
+	"HashTags" : [ "#SergioRamos" ],
+	"FileStorageConfig" : [
 		{
-		"prefijo_archivo_salida" : "tweetsDavis"
+		"outputfile_prefix" : "tweetsDavis",
+		"tweets_per_outputfile" : 10
 		}
 	]
 }

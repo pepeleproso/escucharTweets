@@ -24,18 +24,30 @@ import os
 import time
 import datetime
 import io
+import math
 
 class JsonFileStorage(object):
-    def __init__(self, filePrefix):
-        #FIXME: podria hacer archivos cada X cantidad de tweets en vez de con tiempo
-        self.filename = filePrefix + str(datetime.datetime.now()).split(':')[0] + '.json'
+    def __init__(self, filePrefix, MaximaCantidadTweets):
+        self.TweetsActuales = 0
+        self.MaximaCantidadTweets = MaximaCantidadTweets
+        self.filePrefix = filePrefix + str(datetime.datetime.now()).split(':')[0]
     
+    def getfilename(self):
+        FileNumber = int(math.floor(self.TweetsActuales / self.MaximaCantidadTweets))
+        logger.debug('FileNumber: ' + str(FileNumber)) 
+        filename = self.filePrefix + str(FileNumber) + '.json'
+        logger.debug('FileName: ' + str(filename))
+        return filename
+
     def saveTweet(self, tweetjson):
         logger.info("Saving tweet")
         logger.debug(tweetjson)
+
         try:
-            with open(self.filename, 'a') as outfile:
+            filename = self.getfilename()
+            with open(filename, 'a') as outfile:
                 json.dump(tweetjson, outfile)
+                self.TweetsActuales += 1
         except BaseException as e:
             logger.error(e)
             raise Exception('Error saving tweet',e)

@@ -21,13 +21,14 @@ logger = logging.getLogger(__name__)
 
 from tweepy.streaming import StreamListener
 from JsonFileStorage import JsonFileStorage
+import time
 
 class FileStorageListener(StreamListener):
-    def __init__(self, start_time, time_limit=2, filePrefix='tweets'):
+    def __init__(self, start_time, time_limit=2, filePrefix='tweets', tweetsPerOutputFile=40000):
         self.time = start_time
         self.limit = time_limit
         self.tweet_data = []
-        self.TweetStorage = JsonFileStorage(filePrefix)
+        self.TweetStorage = JsonFileStorage(filePrefix, tweetsPerOutputFile)
 
     def on_data(self, data):
         logger.info("Tweet received")

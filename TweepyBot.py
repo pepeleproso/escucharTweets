@@ -47,8 +47,9 @@ class TweepyBot(object):
                 self.consumer_secret = filecontents['TwitterAPP'][0]['consumer_secret']
                 self.access_token = filecontents['TwitterAPP'][0]['access_token']
                 self.access_secret = filecontents['TwitterAPP'][0]['access_secret']
-                self.outputfileprefix = filecontents['ConfiguracionLogger'][0]['prefijo_archivo_salida']
-                self.keyword_list = filecontents['HasTags']
+                self.outputfileprefix = filecontents['FileStorageConfig'][0]['outputfile_prefix']
+                self.tweetsPerOutputFile = filecontents['FileStorageConfig'][0]['tweets_per_outputfile']
+                self.keyword_list = filecontents['HashTags']
                 logger.info("Searching for Hastags: %s", ' '.join(self.keyword_list))
     
     def InitListening(self):
@@ -57,10 +58,23 @@ class TweepyBot(object):
         auth = OAuthHandler(self.consumer_key, self.consumer_secret)
         auth.set_access_token(self.access_token, self.access_secret)
 
-        start_time = time.time()
-        self.twitterStream = Stream(auth, FileStorageListener(start_time, self.outputfileprefix))
-        self.twitterStream.filter(track=self.keyword_list, stall_warnings=True, async=True, encoding='utf8')
-    
+        try:
+            start_time = time.time()
+            self.twitterStream = Stream(auth, FileStorageListener(start_time, filePrefix=self.outputfileprefix, tweetsPerOutputFile=self.tweetsPerOutputFile))
+            self.twitterStream.filter(track=self.keyword_list, stall_warnings=True, async=True, encoding='utf8')
+        except SSLEOFError as ex:
+            logger.error(ex)
+            if (self.twitterStream is not None):
+                self.StopListening()
+        except gaierror as ex2:
+            logger.error(ex)
+            if (self.twitterStream is not None):
+                self.StopListening()
+        except BadStatusLine as ex3:
+            logger.error(ex)
+            if (self.twitterStream is not None):
+                self.StopListening()
+
     def StopListening(self):
         logging.info("stop tweet listening")
         self.twitterStream.disconnect()
