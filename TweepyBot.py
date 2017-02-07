@@ -22,10 +22,14 @@ logger = logging.getLogger(__name__)
 from tweepy import Stream
 from tweepy import OAuthHandler
 from tweepy.streaming import StreamListener
+from tweepy import API
 import json
 #import os
 import time
 import io
+import ssl
+import socket
+import datetime
 
 from FileStorageListener import FileStorageListener
 
@@ -62,15 +66,7 @@ class TweepyBot(object):
             start_time = time.time()
             self.twitterStream = Stream(auth, FileStorageListener(start_time, filePrefix=self.outputfileprefix, tweetsPerOutputFile=self.tweetsPerOutputFile))
             self.twitterStream.filter(track=self.keyword_list, stall_warnings=True, async=True, encoding='utf8')
-        except SSLEOFError as ex:
-            logger.error(ex)
-            if (self.twitterStream is not None):
-                self.StopListening()
-        except gaierror as ex2:
-            logger.error(ex)
-            if (self.twitterStream is not None):
-                self.StopListening()
-        except BadStatusLine as ex3:
+        except Exception as ex:
             logger.error(ex)
             if (self.twitterStream is not None):
                 self.StopListening()
