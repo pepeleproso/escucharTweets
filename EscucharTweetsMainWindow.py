@@ -5,6 +5,7 @@ from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from Bot import *
 from ConfigManager import *
+from configJsonSaver import *
 
 class EscucharTweetsMainWindows(object):
     def __init__(self):
@@ -43,62 +44,129 @@ class EscucharTweetsMainWindows(object):
 
 
     def btnConfigurar_clicked(self):
-        config = ConfigManager()
+        self.config = ConfigManager()
 
-        qDialogConfiguracion = QDialog()
-        qDialogConfiguracion.setFixedSize(600,500)
+        self.qDialogConfiguracion = QDialog()
+        self.qDialogConfiguracion.setFixedSize(600,500)
 
-        flo = QFormLayout()
-        qLineConsumerKey = QLineEdit()
-        qLineConsumerKey.setAlignment(Qt.AlignLeft)
-        qLineConsumerKey.setText(config.consumer_key)
+        self.flo = QFormLayout()
+        self.qLineConsumerKey = QLineEdit()
+        self.qLineConsumerKey.setAlignment(Qt.AlignLeft)
+        self.qLineConsumerKey.setText(self.config.consumer_key)
         #qLineConsumerKey.setFont(QFont("Arial",20))
-        flo.addRow("Consumer Key", qLineConsumerKey)
+        #self.qLineConsumerKey.setReadOnly(True)
 
-        qLineConsumer_secret = QLineEdit()
-        qLineConsumer_secret.setAlignment(Qt.AlignLeft)
-        qLineConsumer_secret.setText(config.consumer_secret)
-        flo.addRow("Consumer Secret",qLineConsumer_secret)
+        self.flo.addRow("Consumer Key", self.qLineConsumerKey)
+
+        self.qLineConsumer_secret = QLineEdit()
+        self.qLineConsumer_secret.setAlignment(Qt.AlignLeft)
+        self.qLineConsumer_secret.setText(self.config.consumer_secret)
+        self.qLineConsumer_secret.setReadOnly(True)
+        self.flo.addRow("Consumer Secret",self.qLineConsumer_secret)
 	
-        qLineAccess_token = QLineEdit()
-        qLineAccess_token.setAlignment(Qt.AlignLeft)
-        qLineAccess_token.setText(config.access_token)
-        flo.addRow("Access Token",qLineAccess_token)
+        self.qLineAccess_token = QLineEdit()
+        self.qLineAccess_token.setAlignment(Qt.AlignLeft)
+        self.qLineAccess_token.setText(self.config.access_token)
+        self.qLineAccess_token.setReadOnly(True)
+        self.flo.addRow("Access Token",self.qLineAccess_token)
 	
-        qLineAccess_secret = QLineEdit()
-        qLineAccess_secret.setAlignment(Qt.AlignLeft)
-        qLineAccess_secret.setText(config.access_secret)
-        flo.addRow("Access Secret",qLineAccess_secret)
+        self.qLineAccess_secret = QLineEdit()
+        self.qLineAccess_secret.setAlignment(Qt.AlignLeft)
+        self.qLineAccess_secret.setText(self.config.access_secret)
+        self.qLineAccess_secret.setReadOnly(True)
+        self.flo.addRow("Access Secret",self.qLineAccess_secret)
 	
-        qLineOutputFilePrefix = QLineEdit()
-        qLineOutputFilePrefix.setAlignment(Qt.AlignLeft)
-        qLineOutputFilePrefix.setText(config.outputfileprefix)
+        self.qLineOutputFilePrefix = QLineEdit()
+        self.qLineOutputFilePrefix.setAlignment(Qt.AlignLeft)
+        self.qLineOutputFilePrefix.setText(self.config.outputfileprefix)
         #qLineOutputFilePrefix.setEchoMode(QLineEdit.Password)
-        flo.addRow("Prefijo de archivo",qLineOutputFilePrefix)
+        self.flo.addRow("Prefijo de archivo",self.qLineOutputFilePrefix)
 	
-        qLineHashtags = QTextEdit()
-        qLineHashtags.setAlignment(Qt.AlignTop)
+        self.qLineHashtags = QTextEdit()
+        self.qLineHashtags.setAlignment(Qt.AlignTop)
         #qLineHashtags.setAlignment(Qt.)
-        qLineHashtags.setText("Ingrese los hashtags separados por punto y coma (;)")
-        qLineHashtags.setFixedSize(400,200)
-        #qLineHashtags.setReadOnly(True)
-        flo.addRow("Hashtags",qLineHashtags)
+        self.qLineHashtags.setText(",".join(self.config.keyword_list))
+        self.qLineHashtags.setFixedSize(400,200)
+        self.flo.addRow("Hashtags",self.qLineHashtags)
 	
         #e5.editingFinished.connect(enterPress)
-        qDialogConfiguracion.setLayout(flo)
+        self.qDialogConfiguracion.setLayout(self.flo)
 
-        btnAceptarConfiguracion = QPushButton("Aceptar",qDialogConfiguracion)
-        btnAceptarConfiguracion.setFixedSize(100,30)
-        btnParar.clicked.connect(self.btnAceptarConfiguracion_clicked)
+        self.btnAceptarConfiguracion = QPushButton("Aceptar",self.qDialogConfiguracion)
+        self.btnAceptarConfiguracion.setFixedSize(100,30)
+        self.btnAceptarConfiguracion.clicked.connect(self.btnAceptarConfiguracion_clicked)
+
         
-        btnCancelarConfiguracion = QPushButton("Cancelar",qDialogConfiguracion)
-        btnCancelarConfiguracion.setFixedSize(100,30)
-        flo.addRow(btnAceptarConfiguracion,btnCancelarConfiguracion)
+        self.btnCancelarConfiguracion = QPushButton("Cancelar",self.qDialogConfiguracion)
+        self.btnCancelarConfiguracion.setFixedSize(100,30)
+        self.flo.addRow(self.btnAceptarConfiguracion,self.btnCancelarConfiguracion)
 
-        qDialogConfiguracion.setWindowTitle("Configuraciones")
-        qDialogConfiguracion.setWindowModality(Qt.ApplicationModal)
-        qDialogConfiguracion.exec_()
-	
+        self.qDialogConfiguracion.setWindowTitle("Configuraciones")
+        self.qDialogConfiguracion.setWindowModality(Qt.ApplicationModal)
+        self.qDialogConfiguracion.exec_()
+    
+    def btnAceptarConfiguracion_clicked(self):
+        print("boton aceptar configuracion")
+        print("la cadena es " + self.qLineConsumerKey.text())
+        print("la cadena DE HASH es ")
+        print(str(self.qLineHashtags.toPlainText()).split(","))
+        if not(self.qLineConsumerKey.text()):
+            errorMessage = QMessageBox()
+            errorMessage.setIcon(QMessageBox.Critical)
+            errorMessage.setText("Debe ingresar un consumer key")
+            errorMessage.setWindowTitle("Error")
+            errorMessage.setStandardButtons(QMessageBox.Ok)
+            errorMessage.exec_()
+        
+        if not(self.qLineConsumer_secret.text()):
+            errorMessage = QMessageBox()
+            errorMessage.setIcon(QMessageBox.Critical)
+            errorMessage.setText("Debe ingresar un consumer secret")
+            errorMessage.setWindowTitle("Error")
+            errorMessage.setStandardButtons(QMessageBox.Ok)
+            errorMessage.exec_()
+
+        if not(self.qLineAccess_token.text()):
+            errorMessage = QMessageBox()
+            errorMessage.setIcon(QMessageBox.Critical)
+            errorMessage.setText("Debe ingresar un access token")
+            errorMessage.setWindowTitle("Error")
+            errorMessage.setStandardButtons(QMessageBox.Ok)
+            #errorMessage.buttonClicked.connect(self.errorAceptar)
+            errorMessage.exec_()
+
+        if not(self.qLineAccess_secret.text()):
+            errorMessage = QMessageBox()
+            errorMessage.setIcon(QMessageBox.Critical)
+            errorMessage.setText("Debe ingresar un access secret")
+            errorMessage.setWindowTitle("Error")
+            errorMessage.setStandardButtons(QMessageBox.Ok)
+            #errorMessage.buttonClicked.connect(self.errorAceptar)
+            errorMessage.exec_()
+        
+        if not(self.qLineOutputFilePrefix.text()):
+            errorMessage = QMessageBox()
+            errorMessage.setIcon(QMessageBox.Critical)
+            errorMessage.setText("Debe ingresar el prefijo con el que desea guardar los archivos")
+            errorMessage.setWindowTitle("Error")
+            errorMessage.setStandardButtons(QMessageBox.Ok)
+            #errorMessage.buttonClicked.connect(self.errorAceptar)
+            errorMessage.exec_()
+
+        if not(self.qLineHashtags.toPlainText()):
+            errorMessage = QMessageBox()
+            errorMessage.setIcon(QMessageBox.Critical)
+            errorMessage.setText("Debe ingresar al menos un hashtag para comenzar la captura.")
+            errorMessage.setWindowTitle("Error")
+            errorMessage.setStandardButtons(QMessageBox.Ok)
+            #errorMessage.buttonClicked.connect(self.errorAceptar)
+            errorMessage.exec_()
+        listaHashtag = str(self.qLineHashtags.toPlainText()).split(",")
+        saver = configJsonSaver(self.qLineConsumerKey.text,self.qLineConsumer_secret.text,self.qLineAccess_token.text,self.qLineAccess_secret,listaHashtag,self.qLineOutputFilePrefix.text,10)
+        print json.dumps(saver, cls=ObjectEncoder, indent=2, sort_keys=True)
+
+
+        
     def btnIniciarPausar_clicked(self):
         print "btnIniciarPausar_clicked clicked"
         if(self.bot is None):
