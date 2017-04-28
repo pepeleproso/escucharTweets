@@ -27,7 +27,8 @@ from JsonFileStorage import JsonFileStorage
 import time
 
 class FileStorageListener(StreamListener):
-    def __init__(self, start_time, time_limit=2, filePrefix='tweets', tweetsPerOutputFile=40000):
+    def __init__(self, tweepybot, start_time, time_limit=2, filePrefix='tweets', tweetsPerOutputFile=40000):
+        self.tweepyBot = tweepybot
         self.time = start_time
         self.limit = time_limit
         self.tweet_data = []
@@ -52,7 +53,8 @@ class FileStorageListener(StreamListener):
             errfile.write('\n')
 
         if (status == 401):
-            raise ErrorCredencialesException.ErrorCredencialesException("Por favor, verifique las credenciales de twitter") 
+            self.tweepyBot.errorAutentificacion()
+            #raise ErrorCredencialesException.ErrorCredencialesException("Por favor, verifique las credenciales de twitter") 
 
     def on_timeout(self):
         logger.error("Timeout, sleeping for 60 seconds...\n")
