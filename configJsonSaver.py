@@ -22,15 +22,12 @@ class ObjectEncoder(json.JSONEncoder):
             return self.default(d)
         return obj
 
-
-
-
 class TwitterAPP(object):
-    def __init__(self, consumer_key, consumer_secret, access_token, access_secret):
-        self.consumer_key = consumer_key
-        self.consumer_secret = consumer_secret
-        self.access_token = access_token
-        self.access_secret = access_secret
+    def __init__(self, consumerKey, consumerSecret, accessToken, accessSecret):
+        self.consumer_key = consumerKey
+        self.consumer_secret = consumerSecret
+        self.access_token = accessToken
+        self.access_secret = accessSecret
 
 class FileStorageConfig(object):
     def __init__(self,outputfile_prefix,tweets_per_outputfile):
@@ -39,11 +36,17 @@ class FileStorageConfig(object):
     
 
 class configJsonSaver(object):
-    def __init__(self,consumer_key, consumer_secret, access_token, access_secret,hashtags,outputfile_prefix,tweets_per_outputfile):
-        #self.hashtags = hashtags
-        self.TwitterAPP         = [TwitterAPP(consumer_key, consumer_secret, access_token, access_secret)]
-        #self.FileStorageConfig = [FileStorageConfig(outputfile_prefix,tweets_per_outputfile)]
+    def __init__(self,consumer_key, consumer_secret, access_token, access_secret,listaHashtags,outputfile_prefix,tweets_per_outputfile):
+        self.HashTags = listaHashtags
+        self.TwitterAPP = [TwitterAPP(consumer_key, consumer_secret, access_token, access_secret)]
+        self.FileStorageConfig = [FileStorageConfig(outputfile_prefix,tweets_per_outputfile)]
     
-    #def save(self):
-    #    print json.dumps(self, cls=ObjectEncoder, indent=2, sort_keys=True)
-        #falta que guarde
+    def save(self):
+
+        try:
+            filename = "escucharTweets.json"
+            with open(filename, 'w') as outfile:
+                json.dump(self, outfile, cls=ObjectEncoder, indent=2, sort_keys=True)
+        except BaseException as e:
+            logger.error(e)
+            raise Exception('Error saving configuration file',e)

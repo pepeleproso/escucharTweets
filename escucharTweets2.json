@@ -5,12 +5,6 @@
       "tweets_per_outputfile": 10
     }
   ], 
-  "HashTags": [
-    "#macri", 
-    "#cristina", 
-    "#argentina", 
-    "#futbol"
-  ], 
   "TwitterAPP": [
     {
       "access_secret": "wyqdEYIQmavVfAmH0xXb1qUwW8842ajbnaZ84U08ziLxI", 
@@ -18,5 +12,11 @@
       "consumer_key": "wPvbnar6XewHPJBfreavg5urr", 
       "consumer_secret": "w6Ufk0mRRoCDpMssOrQEgTqVo9AmAKbd9sXByVHGYHMIcrYVnU"
     }
+  ], 
+  "hashtags": [
+    "#macri", 
+    "#cristina", 
+    "#argentina", 
+    "#futbol"
   ]
 }

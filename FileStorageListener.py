@@ -17,6 +17,9 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import logging
+import ErrorCredencialesException
+from PyQt4.QtCore import *
+from PyQt4.QtGui import *
 logger = logging.getLogger(__name__)
 
 from tweepy.streaming import StreamListener
@@ -47,6 +50,9 @@ class FileStorageListener(StreamListener):
         with open('logError.json', 'a') as errfile:
             errfile.write(str(status))
             errfile.write('\n')
+
+        if (status == 401):
+            raise ErrorCredencialesException.ErrorCredencialesException("Por favor, verifique las credenciales de twitter") 
 
     def on_timeout(self):
         logger.error("Timeout, sleeping for 60 seconds...\n")

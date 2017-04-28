@@ -42,7 +42,6 @@ class EscucharTweetsMainWindows(object):
         qDialogVentanaPrincipal.show()
         sys.exit(app.exec_())
 
-
     def btnConfigurar_clicked(self):
         self.config = ConfigManager()
 
@@ -61,19 +60,19 @@ class EscucharTweetsMainWindows(object):
         self.qLineConsumer_secret = QLineEdit()
         self.qLineConsumer_secret.setAlignment(Qt.AlignLeft)
         self.qLineConsumer_secret.setText(self.config.consumer_secret)
-        self.qLineConsumer_secret.setReadOnly(True)
+        #self.qLineConsumer_secret.setReadOnly(True)
         self.flo.addRow("Consumer Secret",self.qLineConsumer_secret)
 	
         self.qLineAccess_token = QLineEdit()
         self.qLineAccess_token.setAlignment(Qt.AlignLeft)
         self.qLineAccess_token.setText(self.config.access_token)
-        self.qLineAccess_token.setReadOnly(True)
+        #self.qLineAccess_token.setReadOnly(True)
         self.flo.addRow("Access Token",self.qLineAccess_token)
 	
         self.qLineAccess_secret = QLineEdit()
         self.qLineAccess_secret.setAlignment(Qt.AlignLeft)
         self.qLineAccess_secret.setText(self.config.access_secret)
-        self.qLineAccess_secret.setReadOnly(True)
+        #self.qLineAccess_secret.setReadOnly(True)
         self.flo.addRow("Access Secret",self.qLineAccess_secret)
 	
         self.qLineOutputFilePrefix = QLineEdit()
@@ -106,10 +105,7 @@ class EscucharTweetsMainWindows(object):
         self.qDialogConfiguracion.exec_()
     
     def btnAceptarConfiguracion_clicked(self):
-        print("boton aceptar configuracion")
-        print("la cadena es " + self.qLineConsumerKey.text())
-        print("la cadena DE HASH es ")
-        print(str(self.qLineHashtags.toPlainText()).split(","))
+
         if not(self.qLineConsumerKey.text()):
             errorMessage = QMessageBox()
             errorMessage.setIcon(QMessageBox.Critical)
@@ -159,25 +155,38 @@ class EscucharTweetsMainWindows(object):
             errorMessage.setText("Debe ingresar al menos un hashtag para comenzar la captura.")
             errorMessage.setWindowTitle("Error")
             errorMessage.setStandardButtons(QMessageBox.Ok)
-            #errorMessage.buttonClicked.connect(self.errorAceptar)
             errorMessage.exec_()
-        listaHashtag = str(self.qLineHashtags.toPlainText()).split(",")
-        saver = configJsonSaver(self.qLineConsumerKey.text,self.qLineConsumer_secret.text,self.qLineAccess_token.text,self.qLineAccess_secret,listaHashtag,self.qLineOutputFilePrefix.text,10)
-        print json.dumps(saver, cls=ObjectEncoder, indent=2, sort_keys=True)
 
+        listaHashtag = str(self.qLineHashtags.toPlainText()).split(",")
+        consumerKey = str(self.qLineConsumerKey.text())
+        consumerSecret = str(self.qLineConsumer_secret.text())
+        accessToken = str(self.qLineAccess_token.text())
+        accessSecret = str(self.qLineAccess_secret.text())
+        prefijo = str(self.qLineOutputFilePrefix.text())
+        saver = configJsonSaver(consumerKey,consumerSecret,accessToken,accessSecret,listaHashtag,prefijo,10)
+        saver.save()
+        self.qDialogConfiguracion.close()
 
         
     def btnIniciarPausar_clicked(self):
-        print "btnIniciarPausar_clicked clicked"
         if(self.bot is None):
-            self.bot = Bot()
+            self.bot = Bot(self)
             self.bot.init()
         else:
             self.bot.InitListening(True)
 
+
     def btnParar_clicked(self):
-        self.bot.StopListening(True)
+        self.bot.StopListening(True)    
+
     
+    def autenticarCredencial(self):
+        self.errorMessage = QMessageBox()
+        self.errorMessage.setIcon(QMessageBox.Critical)
+        self.errorMessage.setText("Por favor, vuelva a ingresar las credenciales de twitter")
+        self.errorMessage.setWindowTitle("Error")
+        self.errorMessage.setStandardButtons(QMessageBox.Ok)
+        self.errorMessage.exec_()
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()

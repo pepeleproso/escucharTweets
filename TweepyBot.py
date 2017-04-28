@@ -17,6 +17,8 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import logging
+import EscucharTweetsMainWindow
+import ErrorCredencialesException
 logger = logging.getLogger(__name__)
 
 from tweepy import Stream
@@ -34,7 +36,8 @@ import datetime
 from FileStorageListener import FileStorageListener
 
 class TweepyBot(object):
-    def __init__(self):
+    def __init__(self,escucharTweetsMainWindow):
+        self.escucharTweetsWindow = escucharTweetsMainWindow
         self.consumer_key = None
         self.consumer_secret = None
         self.access_token = None
@@ -63,14 +66,25 @@ class TweepyBot(object):
         auth.set_access_token(self.access_token, self.access_secret)
 
         try:
-            start_time = time.time()
-            self.twitterStream = Stream(auth, FileStorageListener(start_time, filePrefix=self.outputfileprefix, tweetsPerOutputFile=self.tweetsPerOutputFile))
+            start_time = time.time()          
+            #raise ErrorCredencialesException.ErrorCredencialesException("Por favor, verifique las credenciales de twitter") 
+            self.twitterStream = Stream(auth, FileStorageListener(self, start_time, filePrefix=self.outputfileprefix, tweetsPerOutputFile=self.tweetsPerOutputFile))
             self.twitterStream.filter(track=self.keyword_list, stall_warnings=True, async=True, encoding='utf8')
+        except ErrorCredencialesException.ErrorCredencialesException as ex:
+            logger.error(ex)
+            if (self.twitterStream is not None):
+                self.StopListening()
+                raise
         except Exception as ex:
             logger.error(ex)
             if (self.twitterStream is not None):
                 self.StopListening()
 
+
     def StopListening(self):
         logging.info("stop tweet listening")
         self.twitterStream.disconnect()
+    
+    def errorAutentificacion():
+        #raise ErrorCredencialesException.ErrorCredencialesException("Por favor, verifique las credenciales de twitter")
+        self.escucharTweetsWindow.autenticarCredencial()

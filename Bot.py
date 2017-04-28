@@ -17,6 +17,7 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import logging
+import EscucharTweetsMainWindow
 logger = logging.getLogger(__name__)
 import argparse
 import json
@@ -28,8 +29,10 @@ from NetworkManager import NetworkChecker
 from TweepyBot import TweepyBot
 
 class Bot(object):
-    def __init__(self):
-        self.tweetBot = TweepyBot()
+    def __init__(self,escucharTweetsMainWindow):
+        
+        #self.escucharTweetsWindows = escucharTweetsMainWindow
+        self.tweetBot = TweepyBot(escucharTweetsMainWindow)
         self.networkChecker = NetworkChecker()
 
     def StopListening(self, available):
