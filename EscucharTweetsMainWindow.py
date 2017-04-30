@@ -187,9 +187,9 @@ class EscucharTweetsMainWindow(object):
 
 
     def btnParar_clicked(self):
-        self.bot.StopListening(True)    
+        if self.bot is not None:
+            self.bot.StopListening(True)
 
-    
     def autenticarCredencial(self):
         self.errorMessage = QMessageBox()
         self.errorMessage.setIcon(QMessageBox.Critical)
