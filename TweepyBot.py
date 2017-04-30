@@ -21,10 +21,11 @@ import EscucharTweetsMainWindow
 import ErrorCredencialesException
 logger = logging.getLogger(__name__)
 
-from tweepy import Stream
-from tweepy import OAuthHandler
-from tweepy.streaming import StreamListener
-from tweepy import API
+import tweepy
+#from tweepy import Stream
+#from tweepy import OAuthHandler
+#from tweepy.streaming import StreamListener
+#from tweepy import API
 import json
 #import os
 import time
@@ -62,13 +63,13 @@ class TweepyBot(object):
     def InitListening(self):
         logging.info("init tweet listening")
         logger.info ("Listening Hastags: %s", ' '.join(self.keyword_list))
-        auth = OAuthHandler(self.consumer_key, self.consumer_secret)
+        auth = tweepy.OAuthHandler(self.consumer_key, self.consumer_secret)
         auth.set_access_token(self.access_token, self.access_secret)
 
         try:
             start_time = time.time()          
             #raise ErrorCredencialesException.ErrorCredencialesException("Por favor, verifique las credenciales de twitter") 
-            self.twitterStream = Stream(auth, FileStorageListener(self, start_time, filePrefix=self.outputfileprefix, tweetsPerOutputFile=self.tweetsPerOutputFile))
+            self.twitterStream = tweepy.Stream(auth, FileStorageListener(self, start_time, filePrefix=self.outputfileprefix, tweetsPerOutputFile=self.tweetsPerOutputFile))
             self.twitterStream.filter(track=self.keyword_list, stall_warnings=True, async=True, encoding='utf8')
         except ErrorCredencialesException.ErrorCredencialesException as ex:
             logger.error(ex)

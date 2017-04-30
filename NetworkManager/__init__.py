@@ -21,10 +21,10 @@ logger = logging.getLogger(__name__)
 
 try:
     from NetworkManagerDbus import DbusNetworkChecker  as NetworkChecker
-except Exception, e:
+except Exception as e:
     logger.error(e)
 
 try:
     from NetworkManagerHelperWin32 import Win32NetworkChecker  as NetworkChecker
-except Exception, e:
+except Exception as e:
     logger.error(e) 

@@ -25,18 +25,32 @@ import os
 import io
 import time
 
-from NetworkManager import NetworkChecker
-from TweepyBot import TweepyBot
+import NetworkManager
+#from NetworkManager import NetworkChecker
+
+try:
+    import NetworkManager.NetworkManagerDbus as NetworkChecker
+except Exception as e:
+    print('aca')
+    print(e)
+    logger.error(e)
+
+try:
+    import NetworkManager.NetworkManagerHelperWin32 as NetworkChecker
+except Exception as e:
+    logger.error(e)
+
+import TweepyBot
 
 class Bot(object):
     def __init__(self,escucharTweetsMainWindow):
         
         #self.escucharTweetsWindows = escucharTweetsMainWindow
-        self.tweetBot = TweepyBot(escucharTweetsMainWindow)
-        self.networkChecker = NetworkChecker()
+        self.tweetBot = TweepyBot.TweepyBot(escucharTweetsMainWindow)
+        self.networkChecker = NetworkChecker.NetworkChecker()
 
     def StopListening(self, available):
-        print 'stop'
+        print ('stop')
         self.tweetBot.StopListening()
 
     def InitListening(self, avariable):

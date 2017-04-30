@@ -20,9 +20,8 @@
 import logging
 logger = logging.getLogger(__name__)
 
-from base import Event
-from base import Observable
-
+import Event
+import Observable
 import dbus
 import dbus.mainloop.glib
 from gi.repository import GLib
@@ -36,11 +35,11 @@ nm_state = { 0: "Unknown",
             60: "Connected-Site",
             70: "Connected-Global" }
 
-class DbusNetworkChecker(Observable.Observable):
+class NetworkChecker(Observable.Observable):
     ''' this class does lazy checks for network availability and 
     disconnects emesene if the network goes down '''
     def __init__(self):
-        super(DbusNetworkChecker, self).__init__()
+        super(NetworkChecker, self).__init__()
         self.alert_watcher = None
 
     def _on_network_changed(self, *args, **kwargs):

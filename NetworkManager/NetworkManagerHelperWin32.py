@@ -140,11 +140,11 @@ class NetworkManager(DesignatedWrapPolicy):
  
         pythoncom.PumpMessages()
 
-class Win32NetworkChecker(Observable.Observable):
+class NetworkChecker(Observable.Observable):
     ''' this class does lazy checks for network availability and 
     disconnects if the network goes down '''
     def __init__(self):
-        super(Win32NetworkChecker, self).__init__()
+        super(NetworkChecker, self).__init__()
         self.alert_watcher = None
 
     def init(self):
