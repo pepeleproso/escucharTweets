@@ -2,8 +2,9 @@
 
 import sys
 import os
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
+from PyQt5.QtWidgets import *
 from Bot import *
 from ConfigManager import *
 from configJsonSaver import *
@@ -22,7 +23,8 @@ class EscucharTweetsMainWindow(object):
         vbox = QVBoxLayout()
         #print(dir(vbox))
         vbox.setSpacing(20)
-        vbox.setMargin(40)
+        #vbox.setMargin(40)
+        vbox.setContentsMargins(30,30,30,30)
         btnConfigurar = QPushButton(qDialogVentanaPrincipal)
         btnConfigurar.setText("Configuracion")
         btnConfigurar.move(20,20)

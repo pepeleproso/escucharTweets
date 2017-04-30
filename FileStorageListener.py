@@ -18,8 +18,8 @@
 
 import logging
 import ErrorCredencialesException
-from PyQt4.QtCore import *
-from PyQt4.QtGui import *
+from PyQt5.QtCore import *
+from PyQt5.QtGui import *
 logger = logging.getLogger(__name__)
 
 from tweepy.streaming import StreamListener
