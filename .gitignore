@@ -92,3 +92,6 @@ ENV/
 logError.json
 tweets*.json
 escucharTweets.json
+*.csv
+*.json
+
