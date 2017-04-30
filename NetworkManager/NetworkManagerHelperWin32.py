@@ -26,9 +26,10 @@ import pythoncom
 from win32com.server.policy import DesignatedWrapPolicy
 from win32com.client import Dispatch
  
-from base import Event
-from base import Observable
-
+#from base import Event
+import Event
+#from base import Observable
+import Observable
 ## from EventSys.h
 PROGID_EventSystem = "EventSystem.EventSystem"
 PROGID_EventSubscription = "EventSystem.EventSubscription"
