@@ -1,7 +1,7 @@
 {
   "FileStorageConfig": [
     {
-      "outputfile_prefix": "tweetsDavis", 
+      "outputfile_prefix": "PruebaSalidaCSVJson", 
       "tweets_per_outputfile": 10
     }
   ], 
@@ -9,7 +9,11 @@
     "#macri", 
     "#cristina", 
     "#argentina", 
-    "#futbol"
+    "#futbol", 
+    " macri", 
+    "cristina", 
+    "argentina", 
+    "futbol"
   ], 
   "TwitterAPP": [
     {

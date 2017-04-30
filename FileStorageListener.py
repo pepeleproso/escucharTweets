@@ -24,6 +24,7 @@ logger = logging.getLogger(__name__)
 
 from tweepy.streaming import StreamListener
 from JsonFileStorage import JsonFileStorage
+from CSVFileStorage import CSVFileStorage
 import time
 
 class FileStorageListener(StreamListener):
@@ -32,18 +33,29 @@ class FileStorageListener(StreamListener):
         self.time = start_time
         self.limit = time_limit
         self.tweet_data = []
-        self.TweetStorage = JsonFileStorage(filePrefix, tweetsPerOutputFile)
+        #self.TweetStorageJson = JsonFileStorage(filePrefix, tweetsPerOutputFile)
+        #self.TweetStorage = CSVFileStorage(filePrefix)
+        self.TweetStorage = CSVFileStorage(filePrefix)
+        self.TweetStorageJson = JsonFileStorage(filePrefix,tweetsPerOutputFile)
 
     def on_data(self, data):
         logger.info("Tweet received")
         logger.info(data)
-
         try:
             self.TweetStorage.saveTweet(data)
             return True
         except BaseException as e:
             logger.error('failed ondata: %s', str(e))
             time.sleep(5)
+        
+        try:
+            self.TweetStorageJson.saveTweet(data)
+            print(self.TweetStorageJson.saveTweet(data))
+            return True
+        except BaseException as e:
+            logger.error('failed ondata: %s', str(e))
+            time.sleep(5)
+
 
     def on_error(self, status):
         logger.error('Error Status: %s', status)

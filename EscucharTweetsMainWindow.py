@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import sys
+import os
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *
 from Bot import *
@@ -32,7 +33,7 @@ class EscucharTweetsMainWindows(object):
         btnIniciarPausar.clicked.connect(self.btnIniciarPausar_clicked)
  
         btnParar = QPushButton()
-        btnParar.setText("Detener")
+        btnParar.setText("Pausar")
         btnParar.clicked.connect(self.btnParar_clicked)
 
         vbox.addWidget(btnConfigurar)
@@ -80,7 +81,14 @@ class EscucharTweetsMainWindows(object):
         self.qLineOutputFilePrefix.setText(self.config.outputfileprefix)
         #qLineOutputFilePrefix.setEchoMode(QLineEdit.Password)
         self.flo.addRow("Prefijo de archivo",self.qLineOutputFilePrefix)
-	
+
+        #self.qLineCantidadTweets = QLineEdit()
+        #self.qLineCantidadTweets.setAlignment(Qt.AlignLeft)
+        #self.qLineCantidadTweets.setText(self.config.tweetsPerOutputFile)
+        #qLineOutputFilePrefix.setEchoMode(QLineEdit.Password)
+        #self.flo.addRow("Cantidad de tweets por archivo",self.qLineOutputFilePrefix)
+
+
         self.qLineHashtags = QTextEdit()
         self.qLineHashtags.setAlignment(Qt.AlignTop)
         #qLineHashtags.setAlignment(Qt.)
