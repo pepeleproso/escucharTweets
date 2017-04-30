@@ -25,9 +25,6 @@ import os
 import io
 import time
 
-import NetworkManager
-#from NetworkManager import NetworkChecker
-
 try:
     import NetworkManager.NetworkManagerDbus as NetworkChecker
 except Exception as e:

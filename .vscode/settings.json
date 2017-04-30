@@ -1,0 +1,9 @@
+// Coloque su configuración en este archivo para sobrescribir la configuración predeterminada y de usuario.
+{
+     "python.pythonPath": "python3",
+        // Whether to lint Python files using pep8
+    "python.linting.pep8Enabled": true,
+
+    // Whether to lint Python files using flake8
+    "python.linting.flake8Enabled": true
+}

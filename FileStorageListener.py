@@ -43,11 +43,10 @@ class FileStorageListener(StreamListener):
         logger.info(data)
         try:
             self.TweetStorage.saveTweet(data)
-            return True
         except BaseException as e:
             logger.error('failed ondata: %s', str(e))
             time.sleep(5)
-        
+
         try:
             self.TweetStorageJson.saveTweet(data)
             print(self.TweetStorageJson.saveTweet(data))
@@ -55,7 +54,6 @@ class FileStorageListener(StreamListener):
         except BaseException as e:
             logger.error('failed ondata: %s', str(e))
             time.sleep(5)
-
 
     def on_error(self, status):
         logger.error('Error Status: %s', status)
