@@ -8,7 +8,7 @@ from Bot import *
 from ConfigManager import *
 from configJsonSaver import *
 
-class EscucharTweetsMainWindows(object):
+class EscucharTweetsMainWindow(object):
     def __init__(self):
         app = QApplication(sys.argv)
         qDialogVentanaPrincipal = QDialog()
@@ -196,20 +196,4 @@ class EscucharTweetsMainWindows(object):
         self.errorMessage.setStandardButtons(QMessageBox.Ok)
         self.errorMessage.exec_()
 
-if __name__ == '__main__':
-    parser = argparse.ArgumentParser()
-    parser.add_argument('-v', '--verbose', action="count",help="increase output verbosity (e.g., -vv is more than -v)")
-    args = parser.parse_args()
 
-    debuglevel = logging.WARNING
-
-    if args.verbose == 1:
-       debuglevel = logging.WARNING
-    elif args.verbose == 2:
-      debuglevel = logging.INFO
-    elif args.verbose == 3:
-     debuglevel = logging.DEBUG
-
-    logging.basicConfig(level=debuglevel)
-
-    EscucharTweetsMainWindows()

@@ -23,33 +23,8 @@ import json
 import os
 import io
 import time
+import EscucharTweetsMainWindow
 
-from NetworkManager import NetworkChecker
-from TweepyBot import TweepyBot
-
-class Bot(object):
-    def __init__(self):
-        self.tweetBot = TweepyBot()
-        self.networkChecker = NetworkChecker()
-
-    def StopListening(self, avariable):
-        self.tweetBot.StopListening()
-
-    def InitListening(self, avariable):
-        if self.tweetBot != None:
-            self.tweetBot.StopListening()
-        time.sleep(15)
-        self.tweetBot.InitListening()
-
-    def init(self):
-        try:
-            self.tweetBot.InitListening()
-            self.networkChecker.subscribe('NetworkConnect', self.InitListening)
-            self.networkChecker.subscribe('NetworkDisconnect', self.StopListening)
-            self.networkChecker.init()
-        except KeyboardInterrupt as ex:
-            if (self.tweetBot is not None):
-                self.tweetBot.StopListening()
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-v', '--verbose', action="count", 
@@ -67,5 +42,4 @@ elif args.verbose == 3:
 
 logging.basicConfig(level=debuglevel)
 
-bot = Bot()
-bot.init()
+EscucharTweetsMainWindow.EscucharTweetsMainWindow()
