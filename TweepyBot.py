@@ -17,75 +17,46 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import logging
-import EscucharTweetsMainWindow
+# import EscucharTweetsMainWindow
 import ErrorCredencialesException
-logger = logging.getLogger(__name__)
-
 import tweepy
-#from tweepy import Stream
-#from tweepy import OAuthHandler
-#from tweepy.streaming import StreamListener
-#from tweepy import API
-import json
-#import os
 import time
-import io
-import ssl
-import socket
-import datetime
-
+import ConfigManager
 from FileStorageListener import FileStorageListener
 
-class TweepyBot(object):
-    def __init__(self,escucharTweetsMainWindow):
-        self.escucharTweetsWindow = escucharTweetsMainWindow
-        self.consumer_key = None
-        self.consumer_secret = None
-        self.access_token = None
-        self.access_secret = None
-        self.keyword_list = []
-        self.twitterStream = None
-        self.loadConfigData()
+logger = logging.getLogger(__name__)
 
-    def loadConfigData(self):
-        logger.info("Loading Config Options")
-        with open('escucharTweets.json', 'r') as twitterAppfile:
-                filecontents = json.load(twitterAppfile)
-                self.consumer_key = filecontents['TwitterAPP'][0]['consumer_key']
-                self.consumer_secret = filecontents['TwitterAPP'][0]['consumer_secret']
-                self.access_token = filecontents['TwitterAPP'][0]['access_token']
-                self.access_secret = filecontents['TwitterAPP'][0]['access_secret']
-                self.outputfileprefix = filecontents['FileStorageConfig'][0]['outputfile_prefix']
-                self.tweetsPerOutputFile = filecontents['FileStorageConfig'][0]['tweets_per_outputfile']
-                self.keyword_list = filecontents['HashTags']
-                logger.info("Searching for Hastags: %s", ' '.join(self.keyword_list))
-    
+
+class TweepyBot(object):
+    def __init__(self, escucharTweetsMainWindow):
+        self.escucharTweetsWindow = escucharTweetsMainWindow
+        self.config = ConfigManager.ConfigManager()
+        self.twitterStream = None
+
     def InitListening(self):
-        logging.info("init tweet listening")
-        logger.info ("Listening Hastags: %s", ' '.join(self.keyword_list))
-        auth = tweepy.OAuthHandler(self.consumer_key, self.consumer_secret)
-        auth.set_access_token(self.access_token, self.access_secret)
+        logger.info("init tweet listening")
+        logger.info("Listening Hastags: %s", ' '.join(self.config.keyword_list))
+        auth = tweepy.OAuthHandler(self.config.consumer_key, self.config.consumer_secret)
+        auth.set_access_token(self.config.access_token, self.config.access_secret)
 
         try:
-            start_time = time.time()          
-            #raise ErrorCredencialesException.ErrorCredencialesException("Por favor, verifique las credenciales de twitter") 
-            self.twitterStream = tweepy.Stream(auth, FileStorageListener(self, start_time, filePrefix=self.outputfileprefix, tweetsPerOutputFile=self.tweetsPerOutputFile))
+            start_time = time.time()
+            file_storage = FileStorageListener(self,start_time, filePrefix=self.config.outputfileprefix, tweetsPerOutputFile=self.config.tweetsPerOutputFile)
+            self.twitterStream = tweepy.Stream(auth, file_storage)
             self.twitterStream.filter(track=self.keyword_list, stall_warnings=True, async=True, encoding='utf8')
         except ErrorCredencialesException.ErrorCredencialesException as ex:
             logger.error(ex)
-            if (self.twitterStream is not None):
+            if self.twitterStream is not None:
                 self.StopListening()
                 raise
         except Exception as ex:
             logger.error(ex)
-            if (self.twitterStream is not None):
+            if self.twitterStream is not None:
                 self.StopListening()
-
 
     def StopListening(self):
         logging.info("stop tweet listening")
         self.twitterStream.disconnect()
-    
-    def errorAutentificacion():
-        #raise ErrorCredencialesException.ErrorCredencialesException("Por favor, verifique las credenciales de twitter")
+
+    def errorAutentificacion(self):
         self.escucharTweetsWindow.autenticarCredencial()
