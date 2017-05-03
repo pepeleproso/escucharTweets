@@ -17,21 +17,20 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import logging
+import json
+import datetime
+# import io
+import math
+
 logger = logging.getLogger(__name__)
 
-import json
-import os
-import time
-import datetime
-import io
-import math
 
 class JsonFileStorage(object):
     def __init__(self, filePrefix, MaximaCantidadTweets):
         self.TweetsActuales = 0
         self.MaximaCantidadTweets = MaximaCantidadTweets
         self.filePrefix = filePrefix + str(datetime.datetime.now()).split(':')[0]
-    
+
     def getfilename(self):
         FileNumber = int(math.floor(self.TweetsActuales / self.MaximaCantidadTweets))
         logger.debug('FileNumber: ' + str(FileNumber)) 
@@ -48,6 +47,6 @@ class JsonFileStorage(object):
             with open(filename, 'a') as outfile:
                 json.dump(tweetjson, outfile)
                 self.TweetsActuales += 1
-        except BaseException as e:
-            logger.error(e)
-            raise Exception('Error saving tweet',e)
+        except BaseException as ex:
+            logger.error(ex)
+            raise Exception('Error saving tweet', ex)

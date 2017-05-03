@@ -18,22 +18,22 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import logging
-logger = logging.getLogger(__name__)
-
-import Event
 import Observable
 import dbus
 import dbus.mainloop.glib
 from gi.repository import GLib
 
-nm_state = { 0: "Unknown",
+logger = logging.getLogger(__name__)
+
+nm_state = {0: "Unknown",
             10: "Asleep",
             20: "Disconnected",
             30: "Disconnecting",
             40: "Connecting",
             50: "Connected-Local",
             60: "Connected-Site",
-            70: "Connected-Global" }
+            70: "Connected-Global"}
+
 
 class NetworkChecker(Observable.Observable):
     ''' this class does lazy checks for network availability and 
@@ -46,7 +46,7 @@ class NetworkChecker(Observable.Observable):
         s = args[0]
         ss = nm_state[s]
         logger.info("Network State Change: %s", ss)
-        avariable = True
+        # avariable = True
         if not s == 70:
             logger.info("Network State Change: Disconnect")
             self.fire('NetworkDisconnect')
@@ -64,7 +64,7 @@ class NetworkChecker(Observable.Observable):
             gloop = dbus.mainloop.glib.DBusGMainLoop(set_as_default=True)
             gloop = GLib.MainLoop()
             self.alert_watcher = dbus.SystemBus()
-            self.alert_watcher.add_signal_receiver(self._on_network_changed, "StateChanged",  "org.freedesktop.NetworkManager")
+            self.alert_watcher.add_signal_receiver(self._on_network_changed, "StateChanged", "org.freedesktop.NetworkManager")
             gloop.run()
         except KeyboardInterrupt as ex:
             gloop.quit()

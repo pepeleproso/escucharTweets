@@ -17,19 +17,13 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import logging
-import EscucharTweetsMainWindow
-logger = logging.getLogger(__name__)
-import argparse
-import json
-import os
-import io
+import TweepyBot
 import time
+logger = logging.getLogger(__name__)
 
 try:
     import NetworkManager.NetworkManagerDbus as NetworkChecker
 except Exception as e:
-    print('aca')
-    print(e)
     logger.error(e)
 
 try:
@@ -37,12 +31,9 @@ try:
 except Exception as e:
     logger.error(e)
 
-import TweepyBot
 
 class Bot(object):
-    def __init__(self,escucharTweetsMainWindow):
-        
-        #self.escucharTweetsWindows = escucharTweetsMainWindow
+    def __init__(self, escucharTweetsMainWindow):
         self.tweetBot = TweepyBot.TweepyBot(escucharTweetsMainWindow)
         self.networkChecker = NetworkChecker.NetworkChecker()
 
@@ -51,7 +42,7 @@ class Bot(object):
         self.tweetBot.StopListening()
 
     def InitListening(self, avariable):
-        if self.tweetBot != None:
+        if self.tweetBot is not None:
             self.tweetBot.StopListening()
         time.sleep(15)
         self.tweetBot.InitListening()
@@ -63,5 +54,5 @@ class Bot(object):
             self.networkChecker.subscribe('NetworkDisconnect', self.StopListening)
             self.networkChecker.init()
         except KeyboardInterrupt as ex:
-            if (self.tweetBot is not None):
+            if self.tweetBot is not None:
                 self.tweetBot.StopListening()
