@@ -17,16 +17,10 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import logging
+import json
+
 logger = logging.getLogger(__name__)
 
-
-import json
-#import os
-import time
-import io
-import ssl
-import socket
-import datetime
 
 class ConfigManager(object):
     def __init__(self):
@@ -35,18 +29,18 @@ class ConfigManager(object):
         self.access_token = None
         self.access_secret = None
         self.keyword_list = []
-        self.twitterStream = None
+        self.tweets_per_output_file = 1
         self.loadConfigData()
 
     def loadConfigData(self):
         logger.info("Loading Config Options")
-        with open('escucharTweets.json', 'r') as twitterAppfile:
-                filecontents = json.load(twitterAppfile)
-                self.consumer_key = filecontents['TwitterAPP'][0]['consumer_key']
-                self.consumer_secret = filecontents['TwitterAPP'][0]['consumer_secret']
-                self.access_token = filecontents['TwitterAPP'][0]['access_token']
-                self.access_secret = filecontents['TwitterAPP'][0]['access_secret']
-                self.outputfileprefix = filecontents['FileStorageConfig'][0]['outputfile_prefix']
-                self.tweetsPerOutputFile = filecontents['FileStorageConfig'][0]['tweets_per_outputfile']
-                self.keyword_list = filecontents['HashTags']
-                logger.info("Searching for Hastags: %s", ' '.join(self.keyword_list))
+        with open('escucharTweets.json', 'r') as config_file:
+            filecontents = json.load(config_file)
+            self.consumer_key = filecontents['TwitterAPP'][0]['consumer_key']
+            self.consumer_secret = filecontents['TwitterAPP'][0]['consumer_secret']
+            self.access_token = filecontents['TwitterAPP'][0]['access_token']
+            self.access_secret = filecontents['TwitterAPP'][0]['access_secret']
+            self.outputfileprefix = filecontents['FileStorageConfig'][0]['outputfile_prefix']
+            self.tweets_per_output_file = filecontents['FileStorageConfig'][0]['tweets_per_outputfile']
+            self.keyword_list = filecontents['HashTags']
+            logger.info("Searching for Hastags: %s", ' '.join(self.keyword_list))
