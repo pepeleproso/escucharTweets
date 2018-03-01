@@ -1,19 +1,21 @@
 {
   "FileStorageConfig": [
     {
-      "outputfile_prefix": "PruebaSalidaCSVJson",
+      "outputfile_prefix": "RosarioSangra20180228CSVJson",
       "tweets_per_outputfile": 10
     }
   ],
   "HashTags": [
-    "#macri",
-    "#cristina",
-    "#argentina",
-    "#futbol",
-    " macri",
-    "cristina",
-    "argentina",
-    "futbol"
+    "#rosariosangra",
+    " #rosariollora",
+    " #rosariomarcha",
+    " #rosarioduele",
+    " #rosariodicebasta",
+    " #sangrarosario",
+    " #llorarosario",
+    " #marcharosario",
+    " #duelerosario",
+    " #bastadesangre"
   ],
   "TwitterAPP": [
     {

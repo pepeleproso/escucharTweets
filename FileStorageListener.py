@@ -17,26 +17,22 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import logging
-import ErrorCredencialesException
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
+import time
+import JsonFileStorage
+import CSVFileStorage
+import tweepy.streaming
+
 logger = logging.getLogger(__name__)
 
-from tweepy.streaming import StreamListener
-from JsonFileStorage import JsonFileStorage
-from CSVFileStorage import CSVFileStorage
-import time
 
-class FileStorageListener(StreamListener):
+class FileStorageListener(tweepy.streaming.StreamListener):
     def __init__(self, tweepybot, start_time, time_limit=2, filePrefix='tweets', tweetsPerOutputFile=40000):
         self.tweepyBot = tweepybot
         self.time = start_time
         self.limit = time_limit
         self.tweet_data = []
-        #self.TweetStorageJson = JsonFileStorage(filePrefix, tweetsPerOutputFile)
-        #self.TweetStorage = CSVFileStorage(filePrefix)
-        self.TweetStorage = CSVFileStorage(filePrefix)
-        self.TweetStorageJson = JsonFileStorage(filePrefix,tweetsPerOutputFile)
+        self.TweetStorage = CSVFileStorage.CSVFileStorage(filePrefix)
+        self.TweetStorageJson = JsonFileStorage.JsonFileStorage(filePrefix, tweetsPerOutputFile)
 
     def on_data(self, data):
         logger.info("Tweet received")
@@ -64,9 +60,8 @@ class FileStorageListener(StreamListener):
 
         if (status == 401):
             self.tweepyBot.errorAutentificacion()
-            #raise ErrorCredencialesException.ErrorCredencialesException("Por favor, verifique las credenciales de twitter") 
 
     def on_timeout(self):
         logger.error("Timeout, sleeping for 60 seconds...\n")
         time.sleep(60)
-        return 
+        return

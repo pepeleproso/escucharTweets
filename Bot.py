@@ -24,12 +24,12 @@ logger = logging.getLogger(__name__)
 try:
     import NetworkManager.NetworkManagerDbus as NetworkChecker
 except Exception as e:
-    logger.error(e)
+    logger.error(str(e))
 
 try:
     import NetworkManager.NetworkManagerHelperWin32 as NetworkChecker
 except Exception as e:
-    logger.error(e)
+    logger.error(str(e))
 
 
 class Bot(object):
@@ -38,7 +38,7 @@ class Bot(object):
         self.networkChecker = NetworkChecker.NetworkChecker()
 
     def StopListening(self, available):
-        print ('stop')
+        print('stop')
         self.tweetBot.StopListening()
 
     def InitListening(self, avariable):
@@ -53,6 +53,6 @@ class Bot(object):
             self.networkChecker.subscribe('NetworkConnect', self.InitListening)
             self.networkChecker.subscribe('NetworkDisconnect', self.StopListening)
             self.networkChecker.init()
-        except KeyboardInterrupt as ex:
+        except KeyboardInterrupt:
             if self.tweetBot is not None:
                 self.tweetBot.StopListening()

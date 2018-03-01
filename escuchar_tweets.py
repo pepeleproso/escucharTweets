@@ -17,18 +17,14 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import logging
-logger = logging.getLogger(__name__)
 import argparse
-import json
-import os
-import io
-import time
 import EscucharTweetsMainWindow
 
+logger = logging.getLogger(__name__)
 
 parser = argparse.ArgumentParser()
-parser.add_argument('-v', '--verbose', action="count", 
-                        help="increase output verbosity (e.g., -vv is more than -v)")
+parser.add_argument('-v', '--verbose', action="count",
+                    help="increase output verbosity (e.g., -vv is more than -v)")
 args = parser.parse_args()
 
 debuglevel = logging.WARNING

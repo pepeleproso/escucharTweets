@@ -17,6 +17,7 @@
 #    Foundation, Inc., 51 Franklin St, Fifth Floor, Boston, MA  02110-1301  USA
 
 import logging
+# import EscucharTweetsMainWindow
 import ErrorCredencialesException
 import tweepy
 import time
@@ -38,24 +39,30 @@ class TweepyBot(object):
         auth = tweepy.OAuthHandler(self.config.consumer_key, self.config.consumer_secret)
         auth.set_access_token(self.config.access_token, self.config.access_secret)
 
-        try:
-            start_time = time.time()
-            file_storage = FileStorageListener(self, start_time, filePrefix=self.config.outputfileprefix, tweetsPerOutputFile=self.config.tweets_per_output_file)
-            self.twitterStream = tweepy.Stream(auth, file_storage)
-            self.twitterStream.filter(track=self.config.keyword_list, stall_warnings=True, async=True, encoding='utf8')
-        except ErrorCredencialesException.ErrorCredencialesException as ex:
-            logger.error(ex)
-            if self.twitterStream is not None:
-                self.StopListening()
-                raise
-        except Exception as ex:
-            logger.error(ex)
-            if self.twitterStream is not None:
-                self.StopListening()
+        api = tweepy.API(auth, parser=tweepy.parsers.JSONParser())
+        tw = api.statuses_lookup(760139029291630592,True,False,False)
+        print(tw)
 
-    def StopListening(self):
-        logging.info("stop tweet listening")
-        self.twitterStream.disconnect()
 
-    def errorAutentificacion(self):
-        self.escucharTweetsWindow.autenticarCredencial()
+
+        #try:
+         #   start_time = time.time()
+          #  file_storage = FileStorageListener(self,start_time, filePrefix=self.config.outputfileprefix, tweetsPerOutputFile=self.config.tweetsPerOutputFile)
+           # self.twitterStream = tweepy.Stream(auth, file_storage)
+           # self.twitterStream.filter(track=self.keyword_list, stall_warnings=True, async=True, encoding='utf8')
+        #except ErrorCredencialesException.ErrorCredencialesException as ex:
+         #   logger.error(ex)
+          #  if self.twitterStream is not None:
+           #     self.StopListening()
+            #    raise
+       # except Exception as ex:
+        #    logger.error(ex)
+         #   if self.twitterStream is not None:
+          #      self.StopListening()
+
+    #def StopListening(self):
+     #   logging.info("stop tweet listening")
+      #  self.twitterStream.disconnect()
+
+#    def errorAutentificacion(self):
+ #       self.escucharTweetsWindow.autenticarCredencial()
